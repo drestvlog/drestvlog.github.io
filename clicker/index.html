@@ -1,49 +1,101 @@
-<!-- Εισαγωγή του Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-database-compat.js"></script>
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DresVlog Global Clicker</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+        body { background-color: #0f0f0f; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; transition: background-color 0.5s; }
+        .container { text-align: center; background: #1f1f1f; padding: 40px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); max-width: 500px; width: 100%; margin: 20px; }
+        h1 { color: #ff0000; margin-bottom: 10px; text-transform: uppercase; }
+        .views { font-size: 48px; font-weight: bold; margin: 20px 0; letter-spacing: 1px; }
+        .target { color: #aaa; font-size: 18px; margin-bottom: 20px; }
+        .progress-bar-container { background: #333; border-radius: 10px; height: 20px; width: 100%; margin-bottom: 30px; overflow: hidden; }
+        .progress-bar { background: linear-gradient(90deg, #ff0000, #ff5555); height: 100%; width: 0%; transition: width 0.3s ease; }
+        .click-btn { width: 150px; height: 150px; background: #ff0000; border: 5px solid #fff; border-radius: 50%; font-size: 50px; cursor: pointer; box-shadow: 0 8px 20px rgba(255,0,0,0.4); transition: transform 0.05s; user-select: none; }
+        .click-btn:active { transform: scale(0.92); }
+        .win-message { display: none; color: #2ecc71; font-size: 24px; font-weight: bold; margin-top: 20px; animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+    </style>
+</head>
+<body>
 
-<script>
-  // Τα στοιχεία σύνδεσης που θα σου δώσει το Firebase (Δωρεάν)
-  const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
-    projectId: "YOUR_PROJECT",
-    storageBucket: "YOUR_PROJECT.appspot.com",
-    messagingSenderId: "YOUR_ID",
-    appId: "YOUR_APP_ID"
-  };
-  
-  // Αρχικοποίηση
-  firebase.initializeApp(firebaseConfig);
-  const database = firebase.database();
+    <div class="container">
+        <h1>DresVlog Global Clicker</h1>
+        <p>Όλος ο κόσμος κλικάρει μαζί!</p>
+        
+        <div class="views" id="viewsDisplay">0</div>
+        <div class="target" id="targetDisplay">Στόχος: Φόρτωση...</div>
+        
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
 
-  // Στοιχεία HTML
-  const viewsDisplay = document.getElementById('viewsDisplay');
-  const targetDisplay = document.getElementById('targetDisplay');
-  const clickTarget = document.getElementById('clickTarget');
+        <button class="click-btn" id="clickTarget">🎥</button>
+        <div class="win-message" id="winMessage">🎉 Ο ΣΤΟΧΟΣ ΕΠΙΤΕΥΧΘΗΚΕ! 🎉</div>
+    </div>
 
-  // 1. LIVE ΑΝΑΓΝΩΣΗ: Ακούει για αλλαγές στη βάση και ενημερώνει ΟΛΟΥΣ τους χρήστες live
-  database.ref('gameData').on('value', (snapshot) => {
-    const data = snapshot.val();
-    if (data) {
-      viewsDisplay.innerText = Math.floor(data.globalViews).toLocaleString('el-GR');
-      targetDisplay.innerText = `Στόχος: ${Math.floor(data.globalTarget).toLocaleString('el-GR')} Views!`;
-      
-      // Αν πιάσατε τον στόχο
-      if (data.globalViews >= data.globalTarget) {
-        document.body.style.backgroundColor = "#1b4d22"; // Πράσινο φόντο για γιορτή!
-      } else {
-        document.body.style.backgroundColor = "#0f0f0f";
-      }
-    }
-  });
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+        import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
 
-  // 2. ΕΓΓΡΑΦΗ: Όταν κάποιος κάνει κλικ, αυξάνει την τιμή απευθείας στη βάση
-  clickTarget.addEventListener('click', () => {
-    // Χρήση transaction για να μην μπερδεύονται τα κλικ όταν πατάνε πολλοί μαζί
-    database.ref('gameData/globalViews').transaction((currentViews) => {
-      return (currentViews || 0) + 1;
-    });
-  });
-</script>
+        // Τα δικά σου στοιχεία Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDieQQ8okMXJOn4WdfrCedgdwBuiYbwiUs",
+            authDomain: "drestclicker.firebaseapp.com",
+            projectId: "drestclicker",
+            storageBucket: "drestclicker.firebasestorage.app",
+            messagingSenderId: "570495786216",
+            appId: "1:570495786216:web:1469a2b91f94a1e57bfd5d"
+        };
+
+        // Αρχικοποίηση Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        const viewsDisplay = document.getElementById('viewsDisplay');
+        const targetDisplay = document.getElementById('targetDisplay');
+        const progressBar = document.getElementById('progressBar');
+        const clickTarget = document.getElementById('clickTarget');
+        const winMessage = document.getElementById('winMessage');
+
+        // LIVE ΕΝΗΜΕΡΩΣΗ ΑΠΟ ΤΗ ΒΑΣΗ
+        const gameDataRef = ref(database, 'gameData');
+        onValue(gameDataRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                const currentViews = data.globalViews || 0;
+                const currentTarget = data.globalTarget || 100000;
+
+                viewsDisplay.innerText = Math.floor(currentViews).toLocaleString('el-GR');
+                targetDisplay.innerText = `Στόχος: ${Math.floor(currentTarget).toLocaleString('el-GR')} Views`;
+
+                // Μπάρα προόδου
+                let percentage = (currentViews / currentTarget) * 100;
+                if (percentage > 100) percentage = 100;
+                progressBar.style.width = `${percentage}%`;
+
+                // Έλεγχος αν νικήσατε τον στόχο
+                if (currentViews >= currentTarget) {
+                    document.body.style.backgroundColor = "#0a2f1d";
+                    winMessage.style.display = "block";
+                } else {
+                    document.body.style.backgroundColor = "#0f0f0f";
+                    winMessage.style.display = "none";
+                }
+            } else {
+                targetDisplay.innerText = "Στόχος: 100.000 Views (Αρχικοποίηση...)";
+            }
+        });
+
+        // ΑΠΟΣΤΟΛΗ ΚΛΙΚ (Με ασφαλή transaction για να μην χάνονται κλικ)
+        const viewsRef = ref(database, 'gameData/globalViews');
+        clickTarget.addEventListener('click', () => {
+            runTransaction(viewsRef, (currentValue) => {
+                return (currentValue || 0) + 1;
+            });
+        });
+    </script>
+</body>
+</html>
