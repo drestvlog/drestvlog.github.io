@@ -40,16 +40,16 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
         import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyDieQQ8okMXJOn4WdfrCedgdwBuiYbwiUs",
-    authDomain: "drestclicker.firebaseapp.com",
-    // 👇 ΠΡΟΣΘΕΣΕ ΑΥΤΗ ΤΗ ΓΡΑΜΜΗ ΟΠΩΣ ΕΙΝΑΙ:
-    databaseURL: "https://drestclicker-default-rtdb.europe-west1.firebasedatabase.app", 
-    projectId: "drestclicker",
-    storageBucket: "drestclicker.firebasestorage.app",
-    messagingSenderId: "570495786216",
-    appId: "1:570495786216:web:1469a2b91f94a1e57bfd5d"
-};
+    const firebaseConfig = {
+        apiKey: "AIzaSyDieQQ8okMXJOn4WdfrCedgdwBuiYbwiUs",
+        authDomain: "drestclicker.firebaseapp.com",
+        // 👇 ΠΡΟΣΘΕΣΕ ΑΥΤΗ ΤΗ ΓΡΑΜΜΗ ΟΠΩΣ ΕΙΝΑΙ:
+        databaseURL: "https://drestclicker-default-rtdb.europe-west1.firebasedatabase.app", 
+        projectId: "drestclicker",
+        storageBucket: "drestclicker.firebasestorage.app",
+        messagingSenderId: "570495786216",
+        appId: "1:570495786216:web:1469a2b91f94a1e57bfd5d"
+    };
         // Αρχικοποίηση Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
