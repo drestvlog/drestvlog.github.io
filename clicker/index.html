@@ -1,0 +1,49 @@
+<!-- Εισαγωγή του Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-database-compat.js"></script>
+
+<script>
+  // Τα στοιχεία σύνδεσης που θα σου δώσει το Firebase (Δωρεάν)
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
+    projectId: "YOUR_PROJECT",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_ID",
+    appId: "YOUR_APP_ID"
+  };
+  
+  // Αρχικοποίηση
+  firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+
+  // Στοιχεία HTML
+  const viewsDisplay = document.getElementById('viewsDisplay');
+  const targetDisplay = document.getElementById('targetDisplay');
+  const clickTarget = document.getElementById('clickTarget');
+
+  // 1. LIVE ΑΝΑΓΝΩΣΗ: Ακούει για αλλαγές στη βάση και ενημερώνει ΟΛΟΥΣ τους χρήστες live
+  database.ref('gameData').on('value', (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+      viewsDisplay.innerText = Math.floor(data.globalViews).toLocaleString('el-GR');
+      targetDisplay.innerText = `Στόχος: ${Math.floor(data.globalTarget).toLocaleString('el-GR')} Views!`;
+      
+      // Αν πιάσατε τον στόχο
+      if (data.globalViews >= data.globalTarget) {
+        document.body.style.backgroundColor = "#1b4d22"; // Πράσινο φόντο για γιορτή!
+      } else {
+        document.body.style.backgroundColor = "#0f0f0f";
+      }
+    }
+  });
+
+  // 2. ΕΓΓΡΑΦΗ: Όταν κάποιος κάνει κλικ, αυξάνει την τιμή απευθείας στη βάση
+  clickTarget.addEventListener('click', () => {
+    // Χρήση transaction για να μην μπερδεύονται τα κλικ όταν πατάνε πολλοί μαζί
+    database.ref('gameData/globalViews').transaction((currentViews) => {
+      return (currentViews || 0) + 1;
+    });
+  });
+</script>
