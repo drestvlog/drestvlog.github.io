@@ -131,17 +131,36 @@
     ];
     const bombSource = 'bomb.png';
 
+    // --- ΜΕΤΑΒΛΗΤΕΣ ΦΟΡΤΩΣΗΣ (Για ασφάλεια) ---
+    let imagesLoaded = 0;
+    const totalImages = itemSources.length + 1;
+
+    function imageLoaded() {
+        imagesLoaded++;
+        if (imagesLoaded === totalImages) {
+            // Μόλις φορτώσουν όλες οι εικόνες, ξεκινάει το animation loop
+            animate();
+        }
+    }
+
     // Φόρτωση εικόνων αντικειμένων
     const itemImages = [];
     itemSources.forEach(src => {
         const img = new Image();
+        img.onload = imageLoaded;
+        img.onerror = () => console.error("Αδυναμία φόρτωσης της εικόνας: " + src);
         img.src = src;
         itemImages.push(img);
     });
 
     // Φόρτωση εικόνας βόμβας
     const bombImage = new Image();
+    bombImage.onload = imageLoaded;
+    bombImage.onerror = () => console.error("Αδυναμία φόρτωσης της βόμβας: " + bombSource);
     bombImage.src = bombSource;
+
+    // --- Φόρτωση ήχου Explosion / Game Over ---
+    const gameOverSound = new Audio('explosion.mp3');
 
     // --- ΜΕΤΑΒΛΗΤΕΣ ΠΑΙΧΝΙΔΙΟΥ ---
     let score = 0;
@@ -158,17 +177,17 @@
             this.isBomb = Math.random() < 0.25; 
             this.img = this.isBomb ? bombImage : itemImages[Math.floor(Math.random() * itemImages.length)];
             
-            this.radius = 40; 
+            this.radius = 45; 
             this.x = Math.random() * (canvas.width - 200) + 100;
             this.y = canvas.height + this.radius;
             
-            // --- ΑΛΛΑΓΗ: Μειώθηκε η ταχύτητα (vx και vy) για πιο αργή κίνηση ---
+            // Κίνηση
             this.vx = (Math.random() - 0.5) * 3;
             this.vy = -(Math.random() * 3 + 9.5); 
             
             this.sliced = false;
             this.rotation = 0;
-            this.rotationSpeed = (Math.random() - 0.5) * 0.06; // Πιο αργή περιστροφή
+            this.rotationSpeed = (Math.random() - 0.5) * 0.06;
             
             this.sliceAngle = 0;
             this.splitDistance = 0;
@@ -186,6 +205,16 @@
         }
 
         draw() {
+            if (!this.img.complete || this.img.naturalWidth === 0) {
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.isBomb ? '#ff4d4d' : '#ffd700';
+                ctx.fill();
+                ctx.restore();
+                return;
+            }
+
             ctx.save();
             ctx.translate(this.x, this.y);
             ctx.rotate(this.rotation);
@@ -217,15 +246,15 @@
         if (!gameActive) return;
         
         const rect = canvas.getBoundingClientRect();
-        const mouseX = clientX - rect.left;
-        const mouseY = clientY - rect.top;
+        const mouseX = (clientX - rect.left) * (canvas.width / rect.width);
+        const mouseY = (clientY - rect.top) * (canvas.height / rect.height);
 
         sliceTrail.push({x: mouseX, y: mouseY, alpha: 1});
 
         objects.forEach(obj => {
             if (!obj.sliced) {
                 let dist = Math.hypot(obj.x - mouseX, obj.y - mouseY);
-                if (dist < obj.radius) {
+                if (dist < obj.radius + 5) {
                     obj.sliced = true;
                     if (obj.isBomb) {
                         hitBomb();
@@ -263,6 +292,11 @@
         gameActive = false;
         finalScoreElement.innerText = score;
         gameOverScreen.style.display = 'flex';
+        
+        // Αναπαραγωγή του ήχου explosion.mp3
+        gameOverSound.play().catch(error => {
+            console.log("Η αυτόματη αναπαραγωγή εμποδίστηκε από τον browser:", error);
+        });
     }
 
     function resetGame() {
@@ -283,10 +317,9 @@
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // --- ΑΛΛΑΓΗ: Το spawnTimer αυξήθηκε από 40 σε 85 για πολύ πιο αργή εμφάνιση ---
         spawnTimer++;
         if (spawnTimer > 85) { 
-            if (objects.length < 5) { // Μειώθηκε και ο μέγιστος αριθμός ταυτόχρονων αντικειμένων για καθαρή οθόνη
+            if (objects.length < 5) { 
                 objects.push(new GameObject());
             }
             spawnTimer = 0;
@@ -310,7 +343,7 @@
         ctx.beginPath();
         for (let i = 1; i < sliceTrail.length; i++) {
             ctx.strokeStyle = `rgba(255, 255, 255, ${sliceTrail[i].alpha})`;
-            ctx.lineWidth = i * 1.5; 
+            ctx.lineWidth = i * 2; 
             ctx.lineCap = 'round';
             ctx.moveTo(sliceTrail[i-1].x, sliceTrail[i-1].y);
             ctx.lineTo(sliceTrail[i].x, sliceTrail[i].y);
@@ -322,8 +355,6 @@
 
         requestAnimationFrame(animate);
     }
-
-    animate();
 </script>
 
 </body>
