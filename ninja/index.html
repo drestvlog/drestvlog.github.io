@@ -104,7 +104,7 @@
     
     <canvas id="gameCanvas" width="800" height="600"></canvas>
 
-    <div id="game-over-screen" id="gameOverScreen">
+    <div id="game-over-screen">
         <h1>GAME OVER</h1>
         <p>Τελικό Σκορ: <span id="final-score">0</span></p>
         <button id="restart-btn" onclick="resetGame()">Παίξε Ξανά</button>
@@ -119,7 +119,7 @@
     const gameOverScreen = document.getElementById('game-over-screen');
     const finalScoreElement = document.getElementById('final-score');
 
-    // --- ΡΥΘΜΙΣΕΙΣ ΕΙΚΟΝΩΝ (Βάλε τα δικά σου links ή ονόματα αρχείων εδώ) ---
+    // --- ΡΥΘΜΙΣΕΙΣ ΕΙΚΟΝΩΝ ---
     const itemSources = [
         'chris.png',
         'teo.png',
@@ -148,29 +148,28 @@
     let lives = 3;
     let gameActive = true;
     let objects = [];
-    let sliceTrail = []; // Για το εφέ της σπαθιάς
+    let sliceTrail = []; 
     let spawnTimer = 0;
     const gravity = 0.25;
 
-    // Κλάση για τα αντικείμενα (Φρούτα/Βόμβες)
+    // Κλάση για τα αντικείμενα
     class GameObject {
         constructor() {
-            this.isBomb = Math.random() < 0.25; // 25% πιθανότητα να είναι βόμβα
+            this.isBomb = Math.random() < 0.25; 
             this.img = this.isBomb ? bombImage : itemImages[Math.floor(Math.random() * itemImages.length)];
             
-            this.radius = 40; // Μέγεθος αντικειμένου
+            this.radius = 40; 
             this.x = Math.random() * (canvas.width - 200) + 100;
             this.y = canvas.height + this.radius;
             
-            // Ταχύτητα εκτόξευσης (τυχαία x και y ώστε να πηγαίνουν προς τα πάνω)
-            this.vx = (Math.random() - 0.5) * 4;
-            this.vy = -(Math.random() * 4 + 11); 
+            // --- ΑΛΛΑΓΗ: Μειώθηκε η ταχύτητα (vx και vy) για πιο αργή κίνηση ---
+            this.vx = (Math.random() - 0.5) * 3;
+            this.vy = -(Math.random() * 3 + 9.5); 
             
             this.sliced = false;
             this.rotation = 0;
-            this.rotationSpeed = (Math.random() - 0.5) * 0.1;
+            this.rotationSpeed = (Math.random() - 0.5) * 0.06; // Πιο αργή περιστροφή
             
-            // Για το εφέ κοψίματος (χωρισμός στα δύο)
             this.sliceAngle = 0;
             this.splitDistance = 0;
         }
@@ -178,168 +177,9 @@
         update() {
             this.x += this.vx;
             this.y += this.vy;
-            this.vy += gravity; // Εφαρμογή βαρύτητας
+            this.vy += gravity; 
             this.rotation += this.rotationSpeed;
 
             if (this.sliced) {
-                this.splitDistance += 5; // Απομάκρυνση των 2 κομματιών
+                this.splitDistance += 5; 
             }
-        }
-
-        draw() {
-            ctx.save();
-            ctx.translate(this.x, this.y);
-            ctx.rotate(this.rotation);
-
-            if (!this.sliced) {
-                // Σχεδίαση ολόκληρου του αντικειμένου
-                ctx.drawImage(this.img, -this.radius, -this.radius, this.radius * 2, this.radius * 2);
-            } else {
-                // Εφέ κοψίματος: Σχεδιάζουμε το αριστερό και δεξί μισό κομμάτι να απομακρύνονται
-                ctx.save();
-                ctx.translate(-this.splitDistance, 0);
-                ctx.beginPath();
-                ctx.rect(-this.radius, -this.radius, this.radius, this.radius * 2);
-                ctx.clip();
-                ctx.drawImage(this.img, -this.radius, -this.radius, this.radius * 2, this.radius * 2);
-                ctx.restore();
-
-                ctx.save();
-                ctx.translate(this.splitDistance, 0);
-                ctx.beginPath();
-                ctx.rect(0, -this.radius, this.radius, this.radius * 2);
-                ctx.clip();
-                ctx.drawImage(this.img, -this.radius, -this.radius, this.radius * 2, this.radius * 2);
-                ctx.restore();
-            }
-            ctx.restore();
-        }
-    }
-
-    // Παρακολούθηση της κίνησης του ποντικιού/αφής για το κόψιμο
-    let isDrawing = false;
-
-    function handleMove(clientX, clientY) {
-        if (!gameActive) return;
-        
-        const rect = canvas.getBoundingClientRect();
-        const mouseX = clientX - rect.left;
-        const mouseY = clientY - rect.top;
-
-        // Προσθήκη σημείου στο εφέ σπαθιάς
-        sliceTrail.push({x: mouseX, y: mouseY, alpha: 1});
-
-        // Έλεγχος αν χτυπήσαμε κάποιο αντικείμενο
-        objects.forEach(obj => {
-            if (!obj.sliced) {
-                let dist = Math.hypot(obj.x - mouseX, obj.y - mouseY);
-                if (dist < obj.radius) {
-                    obj.sliced = true;
-                    if (obj.isBomb) {
-                        hitBomb();
-                    } else {
-                        score += 10;
-                        scoreElement.innerText = "SCORE: " + score;
-                    }
-                }
-            }
-        });
-    }
-
-    canvas.addEventListener('mousemove', (e) => handleMove(e.clientX, e.clientY));
-    
-    // Υποστήριξη και για κινητά/τάμπλετ (Αφή)
-    canvas.addEventListener('touchmove', (e) => {
-        if(e.touches.length > 0) {
-            handleMove(e.touches[0].clientX, e.touches[0].clientY);
-        }
-        e.preventDefault();
-    }, {passive: false});
-
-    function hitBomb() {
-        lives--;
-        updateLivesUI();
-        if (lives <= 0) {
-            gameOver();
-        }
-    }
-
-    function updateLivesUI() {
-        livesElement.innerText = "♥".repeat(Math.max(0, lives)) + "♡".repeat(Math.max(0, 3 - lives));
-    }
-
-    function gameOver() {
-        gameActive = false;
-        finalScoreElement.innerText = score;
-        gameOverScreen.style.display = 'flex';
-    }
-
-    function resetGame() {
-        score = 0;
-        lives = 3;
-        objects = [];
-        sliceTrail = [];
-        gameActive = true;
-        scoreElement.innerText = "SCORE: 0";
-        updateLivesUI();
-        gameOverScreen.style.display = 'none';
-        animate();
-    }
-
-    // Κύριο Game Loop
-    function animate() {
-        if (!gameActive) return;
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        // 1. Διαχείριση δημιουργίας νέων αντικειμένων (Spawn)
-        spawnTimer++;
-        if (spawnTimer > 40) { // Όσο μικρότερο, τόσο πιο γρήγορα πετάγονται
-            if (objects.length < 8) { // Μέγιστος αριθμός αντικειμένων στην οθόνη ταυτόχρονα
-                objects.push(new GameObject());
-            }
-            spawnTimer = 0;
-        }
-
-        // 2. Ενημέρωση και σχεδίαση αντικειμένων
-        for (let i = objects.length - 1; i >= 0; i--) {
-            let obj = objects[i];
-            obj.update();
-            obj.draw();
-
-            // Αν το αντικείμενο πέσει κάτω από την οθόνη
-            if (obj.y > canvas.height + obj.radius + 10) {
-                // Αν ήταν κανονικό αντικείμενο και ΔΕΝ κόπηκε, χάνεις ζωή
-                if (!obj.isBomb && !obj.sliced) {
-                    lives--;
-                    updateLivesUI();
-                    if (lives <= 0) gameOver();
-                }
-                objects.splice(i, 1);
-            }
-        }
-
-        // 3. Σχεδίαση της γραμμής/σπαθιάς (Slice Trail)
-        ctx.beginPath();
-        for (let i = 1; i < sliceTrail.length; i++) {
-            ctx.strokeStyle = `rgba(255, 255, 255, ${sliceTrail[i].alpha})`;
-            ctx.lineWidth = i * 1.5; // Λεπταίνει στην αρχή της
-            ctx.lineCap = 'round';
-            ctx.moveTo(sliceTrail[i-1].x, sliceTrail[i-1].y);
-            ctx.lineTo(sliceTrail[i].x, sliceTrail[i].y);
-            ctx.stroke();
-        }
-        
-        // Μείωση του alpha για να σβήνει η σπαθιά σιγά σιγά
-        sliceTrail.forEach(pt => pt.alpha -= 0.08);
-        sliceTrail = sliceTrail.filter(pt => pt.alpha > 0);
-
-        requestAnimationFrame(animate);
-    }
-
-    // Εκκίνηση του παιχνιδιού
-    animate();
-</script>
-
-</body>
-</html>
