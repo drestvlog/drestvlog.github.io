@@ -183,4 +183,148 @@
             if (this.sliced) {
                 this.splitDistance += 5; 
             }
-                </script>
+        }
+
+        draw() {
+            ctx.save();
+            ctx.translate(this.x, this.y);
+            ctx.rotate(this.rotation);
+
+            if (!this.sliced) {
+                ctx.drawImage(this.img, -this.radius, -this.radius, this.radius * 2, this.radius * 2);
+            } else {
+                ctx.save();
+                ctx.translate(-this.splitDistance, 0);
+                ctx.beginPath();
+                ctx.rect(-this.radius, -this.radius, this.radius, this.radius * 2);
+                ctx.clip();
+                ctx.drawImage(this.img, -this.radius, -this.radius, this.radius * 2, this.radius * 2);
+                ctx.restore();
+
+                ctx.save();
+                ctx.translate(this.splitDistance, 0);
+                ctx.beginPath();
+                ctx.rect(0, -this.radius, this.radius, this.radius * 2);
+                ctx.clip();
+                ctx.drawImage(this.img, -this.radius, -this.radius, this.radius * 2, this.radius * 2);
+                ctx.restore();
+            }
+            ctx.restore();
+        }
+    }
+
+    function handleMove(clientX, clientY) {
+        if (!gameActive) return;
+        
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = clientX - rect.left;
+        const mouseY = clientY - rect.top;
+
+        sliceTrail.push({x: mouseX, y: mouseY, alpha: 1});
+
+        objects.forEach(obj => {
+            if (!obj.sliced) {
+                let dist = Math.hypot(obj.x - mouseX, obj.y - mouseY);
+                if (dist < obj.radius) {
+                    obj.sliced = true;
+                    if (obj.isBomb) {
+                        hitBomb();
+                    } else {
+                        score += 10;
+                        scoreElement.innerText = "SCORE: " + score;
+                    }
+                }
+            }
+        });
+    }
+
+    canvas.addEventListener('mousemove', (e) => handleMove(e.clientX, e.clientY));
+    
+    canvas.addEventListener('touchmove', (e) => {
+        if(e.touches.length > 0) {
+            handleMove(e.touches[0].clientX, e.touches[0].clientY);
+        }
+        e.preventDefault();
+    }, {passive: false});
+
+    function hitBomb() {
+        lives--;
+        updateLivesUI();
+        if (lives <= 0) {
+            gameOver();
+        }
+    }
+
+    function updateLivesUI() {
+        livesElement.innerText = "♥".repeat(Math.max(0, lives)) + "♡".repeat(Math.max(0, 3 - lives));
+    }
+
+    function gameOver() {
+        gameActive = false;
+        finalScoreElement.innerText = score;
+        gameOverScreen.style.display = 'flex';
+    }
+
+    function resetGame() {
+        score = 0;
+        lives = 3;
+        objects = [];
+        sliceTrail = [];
+        gameActive = true;
+        scoreElement.innerText = "SCORE: 0";
+        updateLivesUI();
+        gameOverScreen.style.display = 'none';
+        animate();
+    }
+
+    // Κύριο Game Loop
+    function animate() {
+        if (!gameActive) return;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // --- ΑΛΛΑΓΗ: Το spawnTimer αυξήθηκε από 40 σε 85 για πολύ πιο αργή εμφάνιση ---
+        spawnTimer++;
+        if (spawnTimer > 85) { 
+            if (objects.length < 5) { // Μειώθηκε και ο μέγιστος αριθμός ταυτόχρονων αντικειμένων για καθαρή οθόνη
+                objects.push(new GameObject());
+            }
+            spawnTimer = 0;
+        }
+
+        for (let i = objects.length - 1; i >= 0; i--) {
+            let obj = objects[i];
+            obj.update();
+            obj.draw();
+
+            if (obj.y > canvas.height + obj.radius + 10) {
+                if (!obj.isBomb && !obj.sliced) {
+                    lives--;
+                    updateLivesUI();
+                    if (lives <= 0) gameOver();
+                }
+                objects.splice(i, 1);
+            }
+        }
+
+        ctx.beginPath();
+        for (let i = 1; i < sliceTrail.length; i++) {
+            ctx.strokeStyle = `rgba(255, 255, 255, ${sliceTrail[i].alpha})`;
+            ctx.lineWidth = i * 1.5; 
+            ctx.lineCap = 'round';
+            ctx.moveTo(sliceTrail[i-1].x, sliceTrail[i-1].y);
+            ctx.lineTo(sliceTrail[i].x, sliceTrail[i].y);
+            ctx.stroke();
+        }
+        
+        sliceTrail.forEach(pt => pt.alpha -= 0.08);
+        sliceTrail = sliceTrail.filter(pt => pt.alpha > 0);
+
+        requestAnimationFrame(animate);
+    }
+
+    animate();
+</script>
+
+</body>
+</html>
