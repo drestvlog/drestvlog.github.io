@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ΑΜΑΝ ΡΕ ΜΑΜΑΛΑΚΗ</title>
+    <style>
+        /* Τρελό background που αλλάζει χρώματα ασταμάτητα */
+        body {
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            background: linear-gradient(45deg, #ff00ff, #00ffff, #ff0000, #ffff00, #00ff00);
+            background-size: 400% 400%;
+            animation: crazyBg 3s ease infinite;
+            overflow-x: hidden;
+        }
+
+        @keyframes crazyBg {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Container για τον τίτλο */
+        .title-container {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        /* Τρελά γράμματα που χορεύουν και αλλάζουν χρώμα */
+        .crazy-title {
+            font-size: 3.5rem;
+            color: #fff;
+            text-shadow: 5px 5px 0px #ff00ff, -5px -5px 0px #00ffff, 3px -3px 0px #00ff00;
+            display: inline-block;
+            animation: shakeAndPulse 0.5s linear infinite alternate;
+        }
+
+        @keyframes shakeAndPulse {
+            0% {
+                transform: skewX(-15deg) scale(1) rotate(-2deg);
+                text-shadow: 5px 5px 0px #ff00ff, -5px -5px 0px #00ffff;
+            }
+            100% {
+                transform: skewX(15deg) scale(1.1) rotate(2deg);
+                text-shadow: -5px 5px 0px #00ff00, 5px -5px 0px #ffff00;
+            }
+        }
+
+        /* Το container του Twitch Video */
+        .video-container {
+            box-shadow: 0px 0px 30px 15px rgba(255, 255, 255, 0.6);
+            border: 5px dashed #ffff00;
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: #000;
+            animation: borderDance 1s linear infinite;
+            max-width: 620px;
+            width: 100%;
+        }
+
+        @keyframes borderDance {
+            0% { border-color: #ffff00; }
+            50% { border-color: #ff00ff; }
+            100% { border-color: #00ffff; }
+        }
+
+        /* Responsive iframe */
+        .video-container iframe {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            display: block;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Κυλιόμενο τρελό κείμενο (Old school marquee) -->
+    <marquee behavior="alternate" scrollamount="15" class="title-container">
+        <h1 class="crazy-title">ΑΜΑΝ ΡΕ ΜΑΜΑΛΑΚΗ ΔΟΥΛΕΙΑ ΕΧΟΥΜΕ</h1>
+    </marquee>
+
+    <!-- Twitch Clip Embed με το δικό σου Netlify domain -->
+    <div class="video-container">
+        <iframe 
+            src="https://clips.twitch.tv/embed?clip=HotRichFiddleheadsRedCoat-9FsrOnbe4HTuk2n6&parent=drestsite.netlify.app" 
+            allowfullscreen="true">
+        </iframe>
+    </div>
+
+</body>
+</html>

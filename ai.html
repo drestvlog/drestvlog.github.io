@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>drestAI - Chatbot</title>
+    <style>
+        :root {
+            --bg-color: #1a1a1a;
+            --chat-bg: #2d2d2d;
+            --text-color: #ffffff;
+            --user-msg: #007bff;
+            --bot-msg: #4a4a4a;
+            --accent-color: #ff4757;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 600px;
+            height: 80vh;
+            background-color: var(--chat-bg);
+            border-radius: 15px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background-color: #111;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            border-bottom: 2px solid #222;
+            letter-spacing: 1px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 12px 16px;
+            border-radius: 15px;
+            line-height: 1.4;
+            word-wrap: break-word;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .user-message {
+            background-color: var(--user-msg);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+
+        .made {
+            color: white;
+            align-self: center;
+            padding: 12px;
+        }
+
+        .bot-message {
+            background-color: var(--bot-msg);
+            color: white;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+
+        .typing-indicator {
+            align-self: flex-start;
+            background-color: var(--bot-msg);
+            padding: 12px 16px;
+            border-radius: 15px;
+            display: none;
+        }
+
+        .typing-dots span {
+            height: 8px;
+            width: 8px;
+            background-color: #aaa;
+            display: inline-block;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        .chat-input-area {
+            padding: 15px;
+            background-color: #111;
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 25px;
+            background-color: #333;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            background-color: #444;
+        }
+
+        button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: #e03d4f;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1.0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="chat-container">
+        <div class="chat-header">drestAI</div>
+        <div class="made"><h6>Made by @den_to_hksera</h6></div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot-message">
+                Καλωσήρθατε σε μία ακόμη εκπομπή αυτού εδώ του καναλιού. Γειά σας καλοί μου φίλοι! Πες μου ό,τι θες...
+            </div>
+            <!-- Εδώ θα εμφανίζονται τα μηνύματα -->
+            <div class="typing-indicator" id="typingIndicator">
+                <div class="typing-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-input-area">
+            <input type="text" id="userInput" placeholder="Γράψε ένα μήνυμα..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">Αποστολή</button>
+        </div>
+    </div>
+
+    
+
+    <script>
+        // Η λίστα με τις τυχαίες απαντήσεις που μου έδωσες
+        const drestQuotes = [
+            "Καλωσήρθατε σε μία ακόμη εκπομπή αυτού εδώ του καναλιού. Γειά σας καλοί μου φίλοι",
+            "Χριστοουυγενναααα, Χριστοουυγενναααα!",
+            "Ορίστε τι πήγα και αγόρασα...",
+            "Πήρα και αυτό το τσουρέκι... Πήρα και αυτό το τσουρέκι... Πήρα και αυτό το τσουρέκι... ",
+            "40 παλικάρια απο τη λει.. από τη λειιι βα δια.",
+            "Γ*** τον αλβανό!",
+            "Θελω να σε δέσω στο κρεβάτι λεει ο άλλος",
+            "Μικρός έκανα χημείες.. επαίνα κατι βάζα",
+            "Ο ΣΑΙΝΗΣ ΘΑ ΜΕ ΣΩΣΕΙ",
+            "Γ*** το κέρατο τους γ***",
+            "WOW!!! LAZER",
+            "Μου φαίνεται ότι... μας κάνουν πλάκα!",
+            "Ενδέχεται να με πιάσει και κόψιμο",
+            "ΕΕΕΕΕ! Πήρα μονος μου kill!"
+        ];
+
+        const chatMessages = document.getElementById('chatMessages');
+        const userInput = document.getElementById('userInput');
+        const typingIndicator = document.getElementById('typingIndicator');
+
+        function sendMessage() {
+            const text = userInput.value.trim();
+            if (text === '') return;
+
+            // Εμφάνιση μηνύματος χρήστη
+            createMessageElement(text, 'user-message');
+            userInput.value = '';
+            scrollToBottom();
+
+            // Εμφάνιση εφέ ότι ο drestAI πληκτρολογεί
+            showTyping(true);
+
+            // Καθυστέρηση απάντησης (1.5 δευτερόλεπτο) για ρεαλισμό
+            setTimeout(() => {
+                showTyping(false);
+                const randomQuote = drestQuotes[Math.floor(Math.random() * drestQuotes.length)];
+                createMessageElement(randomQuote, 'bot-message');
+                scrollToBottom();
+            }, 1500);
+        }
+
+        function createMessageElement(text, className) {
+            const msgDiv = document.createElement('div');
+            msgDiv.classList.add('message', className);
+            msgDiv.innerText = text;
+            // Εισαγωγή πριν από το typing indicator για να μένει πάντα στο τέλος
+            chatMessages.insertBefore(msgDiv, typingIndicator);
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function showTyping(show) {
+            typingIndicator.style.display = show ? 'block' : 'none';
+        }
+
+        function scrollToBottom() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    </script>
+
+</body>
+</html>

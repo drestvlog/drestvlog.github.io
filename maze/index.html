@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scary Maze Game</title>
+<style>
+body{margin:0;background:#111;color:#fff;font-family:Arial;text-align:center;overflow:hidden}
+h1{margin:10px}
+#maze{position:relative;width:800px;height:500px;margin:auto;background:#fff;border:5px solid #000}
+.wall{position:absolute;background:#000}
+#start,#finish{position:absolute;width:60px;height:60px;display:flex;align-items:center;justify-content:center;font-weight:bold}
+#start{left:20px;top:220px;background:lime;color:#000}
+#finish{right:20px;top:220px;background:red}
+#jumpscare{position:fixed;inset:0;background:#000;display:none;justify-content:center;align-items:center;z-index:9999}
+#jumpscare img{width:100vw;height:100vh;object-fit:cover}
+</style>
+</head>
+<body>
+<h1>Πέρασε το ποντίκι μέσα από τον λαβύρινθο!</h1>
+<div id="maze">
+<div id="start">START</div>
+<div id="finish">END</div>
+
+<div class="wall" style="left:100px;top:0;width:20px;height:420px"></div>
+<div class="wall" style="left:220px;top:80px;width:20px;height:420px"></div>
+<div class="wall" style="left:340px;top:0;width:20px;height:420px"></div>
+<div class="wall" style="left:460px;top:80px;width:20px;height:420px"></div>
+<div class="wall" style="left:580px;top:0;width:20px;height:420px"></div>
+</div>
+
+<div id="jumpscare">
+<img src="jumpscare.png" alt="Jumpscare">
+</div>
+
+<script>
+document.querySelectorAll('.wall').forEach(w=>{
+  w.addEventListener('mouseenter',()=>{
+    alert('Έχασες!');
+    location.reload();
+  });
+});
+document.getElementById('finish').addEventListener('mouseenter',()=>{
+  document.getElementById('jumpscare').style.display='flex';
+});
+</script>
+</body>
+</html>
