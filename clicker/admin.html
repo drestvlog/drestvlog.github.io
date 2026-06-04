@@ -4,41 +4,63 @@
     <meta charset="UTF-8">
     <title>DresVlog Clicker - Admin Panel</title>
     <style>
-        body { background: #111; color: #fff; font-family: sans-serif; padding: 40px; text-align: center; }
-        input, button { padding: 10px; margin: 10px; font-size: 16px; border-radius: 5px; border: none; }
-        .admin-box { display: none; background: #222; padding: 20px; border-radius: 10px; max-width: 400px; margin: 0 auto; }
+        body { background: #111; color: #fff; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .box { background: #222; padding: 30px; border-radius: 10px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        input, button { width: 100%; padding: 12px; margin: 10px 0; border-radius: 5px; border: none; font-size: 16px; box-sizing: border-box; }
+        input { background: #333; color: white; }
+        button { background: #ff0000; color: white; font-weight: bold; cursor: pointer; }
+        button:hover { background: #cc0000; }
+        .danger-btn { background: #d9534f; }
+        .danger-btn:hover { background: #c9302c; }
+        #adminPanel { display: none; }
     </style>
 </head>
 <body>
 
-    <h2>Admin Login</h2>
-    <div id="loginSection">
-        <input type="password" id="passInput" placeholder="Εισάγετε Κωδικό">
-        <button onclick="checkPassword()">Είσοδος</button>
+    <div class="box" id="loginSection">
+        <h2>Admin Login</h2>
+        <p style="color: #aaa; font-size: 14px; margin-bottom: 15px;">Εισάγετε τον κωδικό διαχειριστή</p>
+        <input type="password" id="passInput" placeholder="Κωδικός Πρόσβασης">
+        <button id="loginBtn">Είσοδος</button>
     </div>
 
-    <!-- Το panel που εμφανίζεται μόνο αν ο κωδικός είναι σωστός -->
-    <div id="adminPanel" class="admin-box">
-        <h3>Διαχείριση Παιχνιδιού</h3>
-        <hr><br>
-        <label>Νέος Παγκόσμιος Στόχος:</label><br>
-        <input type="number" id="newTarget" placeholder="π.χ. 1000000">
-        <button onclick="setTarget()">Ενημέρωση Στόχου</button>
-        <br><br>
-        <button style="background: #ff3333; color: white;" onclick="resetViews()">⚠️ ΜΗΔΕΝΙΣΜΟΣ ΠΑΓΚΟΣΜΙΩΝ VIEWS</button>
+    <div class="box" id="adminPanel">
+        <h2>Διαχείριση Παιχνιδιού</h2>
+        <p style="color: #2ecc71; margin-bottom: 20px;">Επιτυχής Σύνδεση</p>
+        
+        <label style="text-align: left; display: block; font-size: 14px; color: #aaa;">Νέος Παγκόσμιος Στόχος:</label>
+        <input type="number" id="newTarget" placeholder="π.χ. 500000">
+        <button id="setTargetBtn">Ορισμός Στόχου</button>
+        
+        <hr style="border: 1px solid #333; margin: 20px 0;">
+        
+        <button class="danger-btn" id="resetViewsBtn">⚠️ ΜΗΔΕΝΙΣΜΟΣ ΟΛΩΝ ΤΩΝ VIEWS</button>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-database-compat.js"></script>
-    <script>
-        // Ίδιο config με πριν
-        const firebaseConfig = { /* ... TO CONFIG ΣΟΥ ... */ };
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
 
-        // 🛑 Απλός κωδικός (Για απόλυτη ασφάλεια κανονικά γίνεται μέσω Firebase Auth, 
-        // αλλά για ένα αστείο mini-game, ένας κωδικός στο JS αρκεί)
-        const ADMIN_PASSWORD = "DresVlogKing2026"; 
+        // Τα δικά σου στοιχεία Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDieQQ8okMXJOn4WdfrCedgdwBuiYbwiUs",
+            authDomain: "drestclicker.firebaseapp.com",
+            projectId: "drestclicker",
+            storageBucket: "drestclicker.firebasestorage.app",
+            messagingSenderId: "570495786216",
+            appId: "1:570495786216:web:1469a2b91f94a1e57bfd5d"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // 🔐 Ο ΚΩΔΙΚΟΣ ΔΙΑΧΕΙΡΙΣΤΗ
+        const ADMIN_PASSWORD = "DresAdmin2026!"; 
+
+        // Σύνδεση λειτουργιών με τα κουμπιά
+        document.getElementById('loginBtn').addEventListener('click', checkPassword);
+        document.getElementById('setTargetBtn').addEventListener('click', setTarget);
+        document.getElementById('resetViewsBtn').addEventListener('click', resetViews);
 
         function checkPassword() {
             const input = document.getElementById('passInput').value;
@@ -46,22 +68,26 @@
                 document.getElementById('loginSection').style.display = 'none';
                 document.getElementById('adminPanel').style.display = 'block';
             } else {
-                alert("Λάθος κωδικός!");
+                alert("Λάθος Κωδικός!");
             }
         }
 
         function setTarget() {
             const targetVal = parseInt(document.getElementById('newTarget').value);
-            if(targetVal > 0) {
-                database.ref('gameData/globalTarget').set(targetVal);
-                alert("Ο στόχος άλλαξε!");
+            if (targetVal > 0) {
+                set(ref(database, 'gameData/globalTarget'), targetVal)
+                    .then(() => alert("Ο στόχος άλλαξε με επιτυχία!"))
+                    .catch((error) => alert("Σφάλμα: " + error.message));
+            } else {
+                alert("Παρακαλώ δώστε έναν έγκυρο αριθμό.");
             }
         }
 
         function resetViews() {
-            if(confirm("Θέλεις σίγουρα να μηδενίσεις τα views ΟΛΟΥ ΤΟΥ ΚΟΣΜΟΥ;")) {
-                database.ref('gameData/globalViews').set(0);
-                alert("Τα Views μηδενίστηκαν!");
+            if (confirm("ΠΡΟΣΟΧΗ! Θέλεις σίγουρα να μηδενίσεις τα views ΟΛΟΥ ΤΟΥ ΚΟΣΜΟΥ;")) {
+                set(ref(database, 'gameData/globalViews'), 0)
+                    .then(() => alert("Τα Views μηδενίστηκαν!"))
+                    .catch((error) => alert("Σφάλμα: " + error.message));
             }
         }
     </script>
