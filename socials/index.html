@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Socials</title>
+  <title>drestvlog | Links</title>
+  <!-- FontAwesome Icons Library -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     /* Global Styles & Reset */
     * {
@@ -127,13 +129,13 @@
     .link-content {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.85rem;
     }
 
     .link-icon {
-      width: 20px;
-      height: 20px;
-      fill: currentColor;
+      font-size: 1.25rem;
+      width: 24px;
+      text-align: center;
     }
 
     .arrow-icon {
@@ -148,7 +150,7 @@
       transform: translateX(3px);
     }
 
-    /* Private / VIP Styling Accent */
+    /* Fanclub / Special Accent */
     .link-card.private {
       border-color: rgba(168, 85, 247, 0.3);
       background: rgba(168, 85, 247, 0.08);
@@ -173,66 +175,138 @@
     
     <!-- Profile Header -->
     <header class="profile">
-      <!-- Replace the src URL with your own avatar image -->
+      <!-- Replace the src URL with your avatar image if needed -->
       <img class="profile-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=250" alt="Profile Picture">
-      <h1 class="profile-name">@YourName</h1>
-      <p class="profile-bio">Creator & Designer • Welcome to my personal hub ✨</p>
+      <h1 class="profile-name">@drestvlog</h1>
+      <p class="profile-bio">Giorgos Drestiliaris • Official Links & Hub ✨</p>
     </header>
 
-    <!-- Public Socials Section -->
+    <!-- Header 1: drestvlog -->
     <div class="section-header">
       <span>drestvlog</span>
     </div>
 
     <div class="links-list">
-      <a href="https://instagram.com/yourhandle" target="_blank" rel="noopener noreferrer" class="link-card">
+      <!-- YouTube -->
+      <a href="https://youtube.com/channel/UCDQu_B4gRJlidi2vI-7I-SA?sub_confirmation=1" target="_blank" rel="noopener noreferrer" class="link-card">
         <div class="link-content">
-          <!-- Instagram SVG Icon -->
-          <svg class="link-icon" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-          <span>Instagram</span>
+          <i class="fa-brands fa-youtube link-icon" style="color: #ff0000;"></i>
+          <span>Κάνε Εγγραφή στο YouTube</span>
         </div>
         <svg class="arrow-icon" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-7-7l7 7-7 7"/></svg>
       </a>
 
-      <a href="https://twitter.com/yourhandle" target="_blank" rel="noopener noreferrer" class="link-card">
+      <!-- Facebook -->
+      <a href="https://facebook.com/Giorgos.Drestiliaris.YouTube/" target="_blank" rel="noopener noreferrer" class="link-card">
         <div class="link-content">
-          <!-- X / Twitter SVG Icon -->
-          <svg class="link-icon" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-          <span>X / Twitter</span>
+          <i class="fa-brands fa-facebook link-f link-icon" style="color: #1877f2;"></i>
+          <span>Facebook Page</span>
         </div>
         <svg class="arrow-icon" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-7-7l7 7-7 7"/></svg>
       </a>
 
-      <a href="https://youtube.com/@yourhandle" target="_blank" rel="noopener noreferrer" class="link-card">
+      <!-- Instagram 1 -->
+      <a href="https://instagram.com/giorgos.drestiliaris" target="_blank" rel="noopener noreferrer" class="link-card">
         <div class="link-content">
-          <!-- YouTube SVG Icon -->
-          <svg class="link-icon" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-          <span>YouTube Channel</span>
+          <i class="fa-brands fa-instagram link-icon" style="color: #e1306c;"></i>
+          <span>Instagram (@giorgos.drestiliaris)</span>
+        </div>
+        <svg class="arrow-icon" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-7-7l7 7-7 7"/></svg>
+      </a>
+
+      <!-- Instagram 2 -->
+      <a href="https://instagram.com/drestiliaris" target="_blank" rel="noopener noreferrer" class="link-card">
+        <div class="link-content">
+          <i class="fa-brands fa-instagram link-icon" style="color: #e1306c;"></i>
+          <span>Instagram (@drestiliaris)</span>
+        </div>
+        <svg class="arrow-icon" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-7-7l7 7-7 7"/></svg>
+      </a>
+
+      <!-- Twitter / X -->
+      <a href="https://twitter.com/drestgeorge" target="_blank" rel="noopener noreferrer" class="link-card">
+        <div class="link-content">
+          <i class="fa-brands fa-x-twitter link-icon"></i>
+          <span>Twitter / X</span>
+        </div>
+        <svg class="arrow-icon" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-7-7l7 7-7 7"/></svg>
+      </a>
+
+      <!-- TikTok -->
+      <a href="https://www.tiktok.com/@giorgosdrestiliaris" target="_blank" rel="noopener noreferrer" class="link-card">
+        <div class="link-content">
+          <i class="fa-brands fa-tiktok link-icon"></i>
+          <span>TikTok</span>
+        </div>
+        <svg class="arrow-icon" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-7-7l7 7-7 7"/></svg>
+      </a>
+
+      <!-- Twitch -->
+      <a href="https://www.twitch.tv/drestvlog" target="_blank" rel="noopener noreferrer" class="link-card">
+        <div class="link-content">
+          <i class="fa-brands fa-twitch link-icon" style="color: #a970ff;"></i>
+          <span>Twitch</span>
+        </div>
+        <svg class="arrow-icon" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-7-7l7 7-7 7"/></svg>
+      </a>
+
+      <!-- Discord -->
+      <a href="https://dsc.gg/drestvlog" target="_blank" rel="noopener noreferrer" class="link-card">
+        <div class="link-content">
+          <i class="fa-brands fa-discord link-icon" style="color: #5865f2;"></i>
+          <span>Discord Community</span>
         </div>
         <svg class="arrow-icon" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-7-7l7 7-7 7"/></svg>
       </a>
     </div>
 
-    <!-- Private / Alternate Section Header -->
+    <!-- Header 2: Fanclub -->
     <div class="section-header">
       <span>Fanclub</span>
     </div>
 
     <div class="links-list">
-      <a href="https://instagram.com/privhandle" target="_blank" rel="noopener noreferrer" class="link-card private">
+      <!-- Fanclub TikTok -->
+      <a href="https://tiktok.com/@drestvlogfans" target="_blank" rel="noopener noreferrer" class="link-card private">
         <div class="link-content">
-          <!-- Lock Icon -->
-          <svg class="link-icon" viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm-3 5a3 3 0 0 1 6 0v3H9V7zm3 6a1.5 1.5 0 0 1 1 1.118v2.382a1 1 0 1 1-2 0v-2.382A1.5 1.5 0 0 1 12 13z"/></svg>
-          <span>Private Instagram (Close Friends)</span>
+          <i class="fa-brands fa-tiktok link-icon"></i>
+          <span>Fanclub TikTok</span>
         </div>
         <svg class="arrow-icon" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-7-7l7 7-7 7"/></svg>
       </a>
 
-      <a href="https://tiktok.com/@privhandle" target="_blank" rel="noopener noreferrer" class="link-card private">
+      <!-- Fanclub Instagram -->
+      <a href="https://instagram.com/drestvlogfans" target="_blank" rel="noopener noreferrer" class="link-card private">
         <div class="link-content">
-          <!-- Lock Icon -->
-          <svg class="link-icon" viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm-3 5a3 3 0 0 1 6 0v3H9V7zm3 6a1.5 1.5 0 0 1 1 1.118v2.382a1 1 0 1 1-2 0v-2.382A1.5 1.5 0 0 1 12 13z"/></svg>
-          <span>Private TikTok</span>
+          <i class="fa-brands fa-instagram link-icon" style="color: #e1306c;"></i>
+          <span>Fanclub Instagram</span>
+        </div>
+        <svg class="arrow-icon" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-7-7l7 7-7 7"/></svg>
+      </a>
+
+      <!-- Fanclub YouTube -->
+      <a href="https://youtube.com/@drestvlog" target="_blank" rel="noopener noreferrer" class="link-card private">
+        <div class="link-content">
+          <i class="fa-brands fa-youtube link-icon" style="color: #ff0000;"></i>
+          <span>Fanclub YouTube</span>
+        </div>
+        <svg class="arrow-icon" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-7-7l7 7-7 7"/></svg>
+      </a>
+
+      <!-- Fanclub Website -->
+      <a href="https://drestvlog.github.io/fanclub" target="_blank" rel="noopener noreferrer" class="link-card private">
+        <div class="link-content">
+          <i class="fa-solid fa-globe link-icon" style="color: #a855f7;"></i>
+          <span>Fanclub Website</span>
+        </div>
+        <svg class="arrow-icon" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-7-7l7 7-7 7"/></svg>
+      </a>
+
+      <!-- Fanclub Facebook -->
+      <a href="https://www.facebook.com/profile.php?id=61591026400994" target="_blank" rel="noopener noreferrer" class="link-card private">
+        <div class="link-content">
+          <i class="fa-brands fa-facebook link-icon" style="color: #1877f2;"></i>
+          <span>Fanclub Facebook</span>
         </div>
         <svg class="arrow-icon" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-7-7l7 7-7 7"/></svg>
       </a>
@@ -240,7 +314,7 @@
 
     <!-- Footer -->
     <footer>
-      <p>© <span id="year"></span> @YourName. All rights reserved.</p>
+      <p>© <span id="year"></span> @drestvlog. All rights reserved.</p>
     </footer>
 
   </div>
@@ -250,7 +324,7 @@
     // Automatically set current year in footer
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Optional: Dynamic interaction effect (subtle tilt on click)
+    // Subtle click animation for links
     document.querySelectorAll('.link-card').forEach(card => {
       card.addEventListener('mousedown', () => {
         card.style.transform = 'scale(0.98)';
